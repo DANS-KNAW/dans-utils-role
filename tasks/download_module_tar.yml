@@ -1,0 +1,3 @@
+- include: includes/download_module_archive.yml
+  vars:
+    easy_module_archive_ext: ".tar.gz"

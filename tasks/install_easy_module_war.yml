@@ -1,0 +1,34 @@
+# File: install_easy_module_war.yml
+# Description:
+#   Installation of an EASY Web Application
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+#   easy_webapp_context - the application context to use
+# Globals:
+#   temp_dir - temporary directory to use for downloading and unzipping installation package
+#   See also: includes called from this script.
+
+- name: Ensure Tomcat is down
+  service: name=tomcat6 state=stopped
+
+- name: Remove any installed version under the webapp context
+  file: dest=/usr/share/tomcat6/webapps/{{ easy_webapp_context }}  state=absent
+
+- name: Remove any existing deployment descriptor
+  file: dest=/etc/tomcat6/Catalina/localhost/{{ easy_webapp_context }}.xml state=absent
+
+- include: includes/install_easy_module.yml
+
+- name: Add the application homedir environment variable
+  copy: src={{ easy_module_name }}.sh
+        dest=/etc/profile.d
+        mode="a=rx"
+
+- name: Copy deployment descriptor
+  copy: src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}/bin/{{ easy_webapp_context }}.xml
+        dest=/etc/tomcat6/Catalina/localhost
+  notify: restart tomcat
+
+- name: Ensure log directory is owned by tomcat
+  file: path=/var/log/{{ easy_module_name }} owner=tomcat group=tomcat state=directory

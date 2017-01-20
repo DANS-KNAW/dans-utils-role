@@ -1,0 +1,24 @@
+# File: configure_module.yml
+# Description:
+#   Fills in the configuration files for an EASY module
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+#   easy_module_config_files - array of configuration files to fill in (relative to module installation dir)
+# Globals:
+#   temp_dir - a local temporary directory
+#   easy_modules_installation_base_path - base directory of EASY modules on the server
+# Preconditions:
+#   The module has been downloaded and unzipped to temp_dir with download_module_tar.yml
+#   Variables for all the placeholders in the configuration files are in scope
+# Postconditions:
+#   Module installation contains filled in configuration files
+#   Directory for logging exists
+
+- name: Configure application
+  template: src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}/{{ item }}
+            dest={{ easy_modules_installation_base_path }}/{{ easy_module_name }}/{{ item }}
+  with_items: "{{ easy_module_config_files }}"
+
+- name: Make sure there is a directory to log to
+  file: path=/var/log/{{ easy_module_name }} state=directory mode="a=rwx"

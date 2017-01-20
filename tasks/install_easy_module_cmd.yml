@@ -1,0 +1,15 @@
+# File: install_easy_module_cmd.yml
+# Description:
+#   Standardized EASY module installation with command line interface
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+# Globals:
+#   See includes called from this script.
+
+- include: includes/install_easy_module.yml
+
+- name: Make sure the command line executable is on the PATH
+  file: path=/usr/bin/{{ easy_module_name }}
+        src={{ easy_modules_installation_base_path }}/{{ easy_module_name }}/bin/{{ easy_module_name }}
+        state=link

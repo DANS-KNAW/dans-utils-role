@@ -1,0 +1,66 @@
+# File: download_module_file.yml
+# Description:
+#   Downloads and unarchives the EASY module's file with specified extension to the temporary directory. This file must
+#   be in a format that can be unpacked by Ansible's unarchive module
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+#   easy_module_archive_ext - extension of the file to download, e.g., .tar.gz, .jar
+# Globals:
+#   temp_dir - a local temporary directory
+#   maven_repo_location - URL of the Maven repo to use (only if maven_use_local_cache is False)
+#   maven_group_path - Maven path part corresponding to the EASY module's groupId
+# Postconditions:
+#   Module's archive file in the temp_dir and unzipped
+
+- debug: msg="Downloading and unpacking {{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }}"
+
+- name: Remove any previously downloaded archive from temp directory
+  become: no
+  local_action:
+    file path={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }} state=absent
+
+- name: Remove any previously downloaded unpacked archive from temp directory
+  become: no
+  local_action:
+    file path={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }} state=absent
+
+- name: Download archive from maven repo
+  become: no
+  local_action:
+    get_url url={{ maven_repo_location }}/{{ maven_group_path }}/{{ easy_module_name }}/{{ easy_module_version }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }}
+            dest={{ temp_dir }}
+            timeout=300
+  when: not (maven_use_local_cache|bool)
+
+- name: Copy archive from local maven cache
+  become: no
+  local_action:
+    copy src=~/.m2/repository/{{ maven_group_path }}/{{ easy_module_name }}/{{ easy_module_version }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }}
+                     dest={{ temp_dir }}
+  when: maven_use_local_cache
+
+#
+# If the archive is a .jar file, we create a directory to contain the unpacked files
+#
+- name: Create target dir
+  become: no
+  local_action:
+    file path={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }} state=directory
+  when: easy_module_archive_ext == ".jar"
+
+- name: Unarchive locally
+  become: no
+  local_action:
+    unarchive src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }} dest={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}
+  when: easy_module_archive_ext == ".jar"
+
+#
+# If the archive is something else (presumably .tar.gz) we ASSUME that it contains a base directory with the appropriate name, so that unpacking it will create a directory
+# containing all the files in the achive.
+#
+- name: Unarchive locally
+  become: no
+  local_action:
+    unarchive src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }} dest={{ temp_dir }}
+  when: easy_module_archive_ext != ".jar"

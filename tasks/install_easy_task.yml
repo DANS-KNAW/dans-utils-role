@@ -1,0 +1,37 @@
+# File: install_easy_task.yml
+# Description:
+#   Installation of a legacy EASY task to /home/easy-tool
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+# Globals:
+#   See includes called from this script.
+
+- name: Ensure user easy-tool exists
+  user: name=easy-tool
+
+- include: includes/download_module_tar.yml
+
+- include: includes/unarchive_to_server.yml
+  vars:
+    easy_modules_installation_base_path: /home/easy-tool
+
+- include: includes/configure_module.yml
+  vars:
+    easy_modules_installation_base_path: /home/easy-tool
+
+- name: Ensure easy-tool is the owner of the application directory
+  file: dest=/home/easy-tool/{{ easy_module_name }}-{{ easy_version }}
+        owner=easy-tool
+        group=easy-tool
+        recurse=yes
+
+- name: Set environment variable
+  copy: src={{ easy_module_name}}.sh dest=/etc/profile.d/
+        mode=a+x
+
+- name: Protect passwords
+  file: path=/home/easy-tool/{{ easy_module_name }}/cfg/application.properties
+        mode=600
+
+

@@ -1,0 +1,17 @@
+# File: install_easy_module.yml
+# Description:
+#   Standardized EASY module installation
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+# Globals:
+#   See includes called from this script.
+
+- include: includes/download_module_tar.yml
+
+- include: includes/unarchive_to_server.yml
+
+- include: includes/configure_module.yml
+  vars:
+    easy_module_config_files:
+      - cfg/application.properties

@@ -1,0 +1,23 @@
+# File: unarchive_to_server.yml
+# Description:
+#   Unzip a downloaded tar.gz to the server
+# Parameters:
+#   easy_module_name - name of the EASY module to configure
+#   easy_module_version - version of the EASY module
+# Globals:
+#   easy_modules_installation_base_path - base directory to install this module under
+#   See includes called from this script
+# Preconditions:
+#   Installation has been downloaded to temp_dir
+
+- name: Remove any previously installed copy of the same version
+  file: dest={{ easy_modules_installation_base_path }}/{{ easy_module_name }}-{{ easy_module_version }} state=absent
+
+- name: Untar installation package to the server
+  unarchive: src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}.tar.gz
+             dest={{ easy_modules_installation_base_path }}/
+
+- name: Make this the currently active version
+  file: path={{ easy_modules_installation_base_path }}/{{ easy_module_name }}
+        src={{ easy_modules_installation_base_path }}/{{ easy_module_name }}-{{ easy_module_version }}
+        state=link
