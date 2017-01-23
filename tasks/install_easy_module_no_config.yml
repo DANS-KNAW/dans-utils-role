@@ -7,6 +7,6 @@
 # Globals:
 #   See includes called from this script.
 
-- include: includes/download_module_tar.yml
+- include: download_module_tar.yml
 
-- include: includes/unarchive_to_server.yml
+- include: unarchive_to_server.yml

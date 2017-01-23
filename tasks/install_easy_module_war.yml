@@ -18,7 +18,7 @@
 - name: Remove any existing deployment descriptor
   file: dest=/etc/tomcat6/Catalina/localhost/{{ easy_webapp_context }}.xml state=absent
 
-- include: includes/install_easy_module.yml
+- include: install_easy_module.yml
 
 - name: Add the application homedir environment variable
   copy: src={{ easy_module_name }}.sh

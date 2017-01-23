@@ -38,7 +38,7 @@
   local_action:
     copy src=~/.m2/repository/{{ maven_group_path }}/{{ easy_module_name }}/{{ easy_module_version }}/{{ easy_module_name }}-{{ easy_module_version }}{{ easy_module_archive_ext }}
                      dest={{ temp_dir }}
-  when: maven_use_local_cache
+  when: (maven_use_local_cache|bool)
 
 #
 # If the archive is a .jar file, we create a directory to contain the unpacked files

@@ -7,7 +7,7 @@
 # Globals:
 #   See includes called from this script.
 
-- include: includes/install_easy_module.yml
+- include: install_easy_module.yml
 
 - name: Make sure the command line executable is on the PATH
   file: path=/usr/bin/{{ easy_module_name }}
