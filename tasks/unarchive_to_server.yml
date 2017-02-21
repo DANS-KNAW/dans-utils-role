@@ -21,3 +21,4 @@
   file: path={{ easy_modules_installation_base_path }}/{{ easy_module_name }}
         src={{ easy_modules_installation_base_path }}/{{ easy_module_name }}-{{ easy_module_version }}
         state=link
+

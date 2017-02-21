@@ -1,5 +1,5 @@
 temp_dir: "{{ lookup('env','TMPDIR') }}"
-easy_modules_installation_base_path: "/opt"
+easy_modules_installation_base_path: "/usr/local"
 maven_repo_location: "http://maven-repo.dans.knaw.nl/libs-release-local"
 maven_repo_location_ext: "http://maven-repo.dans.knaw.nl/ext-release-local"
 maven_use_local_cache: "yes"

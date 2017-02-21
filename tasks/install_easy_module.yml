@@ -7,11 +7,12 @@
 # Globals:
 #   See includes called from this script.
 
+- name: Create a user for the module
+  user: name={{ easy_module_name }}
+
 - include: download_module_tar.yml
 
 - include: unarchive_to_server.yml
 
-- include: configure_module.yml
-  vars:
-    easy_module_config_files:
-      - cfg/application.properties
+- name: Create facts for module
+  template: src=fact.py dest=/etc/ansible/facts.d/{{ easy_module_name|replace('-', '_') }}.fact mode="u+x"

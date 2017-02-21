@@ -1,0 +1,17 @@
+- name: Install service (systemd variant)
+  copy: remote_src=True src="{{ easy_modules_installation_base_path }}/{{ easy_module_name }}/bin/{{ easy_module_name }}.service" dest=/usr/lib/systemd/system
+  when: ansible_lsb.major_release|int > 6
+
+- name: Install jsvc if required
+  yum: name=jsvc
+  when: ansible_lsb.major_release|int < 7
+
+- name: Install service (initd variant)
+  copy: remote_src=True src="{{ easy_modules_installation_base_path }}/{{ easy_module_name }}/bin/{{ easy_module_name }}-initd.sh" dest=/etc/init.d/{{ easy_module_name }} mode=a+x
+  when: ansible_lsb.major_release|int < 7
+
+- name: Create log directory for service
+  file: path=/var/log/{{ easy_module_name }} state=directory owner={{ easy_module_name }} group={{ easy_module_name }} mode=0755
+
+- name: Enable service
+  service: name={{ easy_module_name }} enabled=true

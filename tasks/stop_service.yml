@@ -1,0 +1,3 @@
+- name: Stop service
+  service: name={{ easy_module_name }} state=stopped
+  when: ansible_local.installed.{{ easy_module_name }} not none

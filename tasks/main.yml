@@ -1,0 +1,15 @@
+- name: Install LSB to read OS version
+  yum: name=redhat-lsb-core
+
+- name: Install required libraries
+  yum: name=libselinux-python
+
+- name: Create the facts directory
+  file: path=/etc/ansible/facts.d state=directory
+
+- name: Make common fact functions available
+  copy: src=functions.py dest=/etc/ansible/facts.d/functions.py mode="u+x"
+
+- name: Reload variables (for both redhat-lsb-core and local facts)
+  setup:
+

@@ -1,0 +1,4 @@
+- name: Make sure the command line executable is on the PATH
+  file: path=/usr/bin/{{ easy_module_name }}
+        src={{ easy_modules_installation_base_path }}/{{ easy_module_name }}/bin/{{ easy_module_name }}
+        state=link
