@@ -15,7 +15,7 @@
 
 - name: Untar installation package to the server
   unarchive: src={{ temp_dir }}/{{ easy_module_name }}-{{ easy_module_version }}.tar.gz
-             dest={{ easy_modules_installation_base_path }}/
+             dest={{ easy_modules_installation_base_path }}/ owner={{ easy_module_name }} group=funcadmin mode=0770
 
 - name: Make this the currently active version
   file: path={{ easy_modules_installation_base_path }}/{{ easy_module_name }}
